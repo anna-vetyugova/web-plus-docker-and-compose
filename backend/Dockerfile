@@ -1,13 +1,13 @@
-FROM node:16-alpine as builder
+FROM node:18-alpine as builder
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json .
 RUN npm ci --no-audit --no-fund
-COPY . ./
+COPY . .
 RUN npm run build
 
-FROM node:16-alpine as runner
+FROM node:18-alpine as runner
 WORKDIR /app
-COPY --from=builder /app/package*.json ./
+COPY package*.json .
 RUN npm i --omit=dev --no-audit --no-fund \
     && npm i -g pm2
 COPY --from=builder /app/dist ./dist
